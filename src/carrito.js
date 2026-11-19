@@ -7,7 +7,7 @@ export class Carrito {
   }
 
   agregar(nombre, precio, cantidad = 1) {
-    if (precio <= 0) {
+    if (typeof precio !== "number" || precio <= 0) {
       throw new Error("El precio debe ser mayor que cero");
     }
 
@@ -32,6 +32,18 @@ export class Carrito {
 
   agregarProducto(nombre, precio) {
     this.agregar(nombre, precio, 1);
+  }
+
+  eliminar(nombre) {
+    const indice = this.productos.findIndex(
+      (producto) => producto.nombre === nombre,
+    );
+
+    if (indice === -1) {
+      throw new Error("El producto no está en el carrito");
+    }
+
+    this.productos.splice(indice, 1);
   }
 
   cantidadDeItems() {
