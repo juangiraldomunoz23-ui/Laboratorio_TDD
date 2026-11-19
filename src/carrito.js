@@ -1,5 +1,3 @@
-// Laboratorio TDD: carrito de compras
-
 const IVA = 0.19;
 
 const CUPONES = {
