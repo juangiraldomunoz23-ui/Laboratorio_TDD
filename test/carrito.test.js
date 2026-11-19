@@ -20,21 +20,25 @@ describe("Carrito de compras", () => {
   });
 
   describe("Iteración 2: agregar productos", () => {
-    test("agregar un producto aumenta la cantidad de ítems", () => {
-      carrito.agregarProducto("Mouse", 50000);
-      assert.equal(carrito.cantidadDeItems(), 1);
-    });
+    test("agregar un producto actualiza cantidad y subtotal", () => {
+      carrito.agregar("Mouse", 50000, 2);
 
-    test("agregar dos productos diferentes aumenta la cantidad de ítems", () => {
-      carrito.agregarProducto("Mouse", 50000);
-      carrito.agregarProducto("Teclado", 80000);
       assert.equal(carrito.cantidadDeItems(), 2);
+      assert.equal(carrito.subtotal(), 100000);
     });
 
-    test("el subtotal es la suma de los precios de los productos", () => {
-      carrito.agregarProducto("Mouse", 50000);
-      carrito.agregarProducto("Teclado", 80000);
-      assert.equal(carrito.subtotal(), 130000);
+    test("agregar varios productos suma todos los subtotales", () => {
+      carrito.agregar("Mouse", 50000, 2);
+      carrito.agregar("Teclado", 120000, 1);
+
+      assert.equal(carrito.cantidadDeItems(), 3);
+      assert.equal(carrito.subtotal(), 220000);
+    });
+
+    test("si no se indica cantidad, se agrega una unidad", () => {
+      carrito.agregar("Audífonos", 80000);
+
+      assert.equal(carrito.cantidadDeItems(), 1);
     });
   });
 
@@ -46,6 +50,19 @@ describe("Carrito de compras", () => {
       assert.equal(carrito.productos.length, 1);
       assert.equal(carrito.cantidadDeItems(), 3);
       assert.equal(carrito.subtotal(), 150000);
+    });
+  });
+
+  describe("Iteración 4: validaciones", () => {
+    test("no permite precios negativos o en cero", () => {
+      assert.throws(() => carrito.agregar("Mouse", -100, 1), /precio/);
+      assert.throws(() => carrito.agregar("Mouse", 0, 1), /precio/);
+    });
+
+    test("no permite cantidades en cero, negativas o decimales", () => {
+      assert.throws(() => carrito.agregar("Mouse", 50000, 0), /cantidad/);
+      assert.throws(() => carrito.agregar("Mouse", 50000, -1), /cantidad/);
+      assert.throws(() => carrito.agregar("Mouse", 50000, 1.5), /cantidad/);
     });
   });
 });
