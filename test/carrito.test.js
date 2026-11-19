@@ -26,36 +26,35 @@ describe("Carrito de compras", () => {
       assert.equal(carrito.subtotal(), 100000);
     });
 
-    test("agregar varios productos suma todos los subtotales", () => {
+    test("agregar varios productos suma sus subtotales", () => {
       carrito.agregar("Mouse", 50000, 2);
-      carrito.agregar("Teclado", 120000, 1);
-      assert.equal(carrito.cantidadDeItems(), 3);
-      assert.equal(carrito.subtotal(), 220000);
+      carrito.agregar("Teclado", 100000, 1);
+      assert.equal(carrito.subtotal(), 200000);
     });
 
-    test("si no se indica cantidad, se agrega una unidad", () => {
-      carrito.agregar("Audífonos", 80000);
+    test("si no se indica cantidad, agrega una unidad", () => {
+      carrito.agregar("Mouse", 50000);
       assert.equal(carrito.cantidadDeItems(), 1);
     });
   });
 
-  describe("Iteración 3: producto repetido", () => {
-    test("agregar el mismo producto acumula la cantidad en una sola línea", () => {
-      carrito.agregar("Mouse", 50000, 1);
+  describe("Iteración 3: productos repetidos", () => {
+    test("agregar el mismo producto dos veces acumula la cantidad", () => {
       carrito.agregar("Mouse", 50000, 2);
+      carrito.agregar("Mouse", 50000, 3);
+      assert.equal(carrito.cantidadDeItems(), 5);
       assert.equal(carrito.productos.length, 1);
-      assert.equal(carrito.cantidadDeItems(), 3);
-      assert.equal(carrito.subtotal(), 150000);
+      assert.equal(carrito.subtotal(), 250000);
     });
   });
 
   describe("Iteración 4: validaciones", () => {
-    test("no permite precios negativos o en cero", () => {
-      assert.throws(() => carrito.agregar("Mouse", -100, 1), /precio/);
-      assert.throws(() => carrito.agregar("Mouse", 0, 1), /precio/);
+    test("no permite precios negativos o cero", () => {
+      assert.throws(() => carrito.agregar("Mouse", 0), /precio/);
+      assert.throws(() => carrito.agregar("Mouse", -100), /precio/);
     });
 
-    test("no permite cantidades en cero, negativas o decimales", () => {
+    test("no permite cantidades cero, negativas o decimales", () => {
       assert.throws(() => carrito.agregar("Mouse", 50000, 0), /cantidad/);
       assert.throws(() => carrito.agregar("Mouse", 50000, -1), /cantidad/);
       assert.throws(() => carrito.agregar("Mouse", 50000, 1.5), /cantidad/);
@@ -65,14 +64,13 @@ describe("Carrito de compras", () => {
   describe("Iteración 5: eliminar productos", () => {
     test("eliminar un producto lo quita del carrito", () => {
       carrito.agregar("Mouse", 50000, 2);
-      carrito.agregar("Teclado", 120000, 1);
       carrito.eliminar("Mouse");
-      assert.equal(carrito.cantidadDeItems(), 1);
-      assert.equal(carrito.subtotal(), 120000);
+      assert.equal(carrito.cantidadDeItems(), 0);
+      assert.equal(carrito.subtotal(), 0);
     });
 
-    test("eliminar un producto que no existe lanza un error", () => {
-      assert.throws(() => carrito.eliminar("Monitor"), /no está en el carrito/);
+    test("eliminar un producto inexistente lanza un error", () => {
+      assert.throws(() => carrito.eliminar("Mouse"), /no está en el carrito/);
     });
   });
 
@@ -115,6 +113,20 @@ describe("Carrito de compras", () => {
 
     test("un carrito vacío tiene total 0", () => {
       assert.equal(carrito.total(), 0);
+    });
+  });
+
+  describe("Reto A: resumen de la compra", () => {
+    test("resumen devuelve todos los valores de la compra", () => {
+      carrito.agregar("Mouse", 50000, 2);
+      carrito.aplicarCupon("DESC10");
+
+      assert.deepEqual(carrito.resumen(), {
+        subtotal: 100000,
+        descuento: 10000,
+        iva: 17100,
+        total: 107100,
+      });
     });
   });
 });

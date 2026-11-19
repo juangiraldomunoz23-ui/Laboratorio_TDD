@@ -79,6 +79,15 @@ export class Carrito {
     return this.subtotal() - this.descuento() + this.iva();
   }
 
+  resumen() {
+    return {
+      subtotal: this.subtotal(),
+      descuento: this.descuento(),
+      iva: this.iva(),
+      total: this.total(),
+    };
+  }
+
   cantidadDeItems() {
     return this.productos.reduce(
       (suma, producto) => suma + producto.cantidad,
