@@ -1,25 +1,42 @@
 // Laboratorio TDD: carrito de compras
+// Escribe aquí el código SOLO después de tener una prueba en rojo.
 
 export class Carrito {
   constructor() {
     this.productos = [];
   }
 
-  cantidadDeItems() {
-    return this.productos.length;
+  agregar(nombre, precio, cantidad = 1) {
+    const existente = this.productos.find(
+      (producto) => producto.nombre === nombre,
+    );
+
+    if (existente) {
+      existente.cantidad += cantidad;
+    } else {
+      this.productos.push({
+        nombre,
+        precio,
+        cantidad,
+      });
+    }
   }
 
-  subtotal() {
+  agregarProducto(nombre, precio) {
+    this.agregar(nombre, precio, 1);
+  }
+
+  cantidadDeItems() {
     return this.productos.reduce(
-      (total, producto) => total + producto.precio,
+      (suma, producto) => suma + producto.cantidad,
       0,
     );
   }
 
-  agregarProducto(nombre, precio) {
-    this.productos.push({
-      nombre,
-      precio,
-    });
+  subtotal() {
+    return this.productos.reduce(
+      (suma, producto) => suma + producto.precio * producto.cantidad,
+      0,
+    );
   }
 }
