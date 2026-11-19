@@ -1,12 +1,25 @@
 // Laboratorio TDD: carrito de compras
-// Escribe aquí el código SOLO después de tener una prueba en rojo.
 
 export class Carrito {
+  constructor() {
+    this.productos = [];
+  }
+
   cantidadDeItems() {
-    return 0;
+    return this.productos.length;
   }
 
   subtotal() {
-    return 0;
+    return this.productos.reduce(
+      (total, producto) => total + producto.precio,
+      0,
+    );
+  }
+
+  agregarProducto(nombre, precio) {
+    this.productos.push({
+      nombre,
+      precio,
+    });
   }
 }
